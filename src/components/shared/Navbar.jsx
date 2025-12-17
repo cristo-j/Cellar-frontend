@@ -4,7 +4,8 @@ import NavbarLoggedUser from "./NavbarLoggedUser";
 
 export default function Navbar() {
     return (
-        <nav className="navbar navbar-expand-lg bg-body-tertiary">
+        <nav className="navbar navbar-expand-lg navbar-dark sticky-top" style={{ backgroundColor: '#9B111E' }}>
+
             <div className="container-fluid">
                 {/* 1) Brand - fica sempre à esquerda */}
                 <Link className="navbar-brand" to="/">

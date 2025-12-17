@@ -2,18 +2,18 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { useAuthFetch } from '../../auth/useAuthFetch';
 import Toast from '../shared/Toast';
-import ReCaptcha from '../shared/ReCaptcha';
+
 
 // Pega a API_BASE_URL da variável de ambiente
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-const ChamadoEditForm = ({ chamado }) => {
-    const [texto, setTexto] = useState(chamado.texto);
-    const [estado, setEstado] = useState(chamado.estado);
-    const [imagem, setImagem] = useState(null);
-    const [hasImagem, setHasImagem] = useState(chamado.url_imagem ? true : false);
+const VinhoEditForm = ({ vinho }) => {
+    const [nome, setNome] = useState(vinho.nome);
+    const [produtor, setProdutor] = useState(vinho.produtor);
+    const [pais_origem, setPaisOrigem] = useState(vinho.pais_origem);
+    const [tipo, setTipo] = useState(vinho.tipo);
+    const [uva_casta, setUvaCasta] = useState(vinho.uva_casta);
     const [error, setError] = useState(null);
-    const [captchaToken, setCaptchaToken] = useState(null);
     const [loading, setLoading] = useState(false); // controla ciclo de envio/patch
 
     const navigate = useNavigate();
@@ -21,171 +21,110 @@ const ChamadoEditForm = ({ chamado }) => {
 
     const submitForm = async (e) => {
         e.preventDefault();
+        setError(null);
 
-        // Exige o reCAPTCHA antes de enviar
-        if (!captchaToken) {
-            setError('Por favor, confirme o reCAPTCHA antes de atualizar o chamado.');
-            return;
-        }
-
-        // 1. Crie um novo objeto FormData
-        const formData = new FormData();
-
-        // 2. Adicione todos os campos do formulário
-        formData.append('texto', texto);
-        formData.append('estado', estado);
-        if (imagem) {
-            formData.append('imagem', imagem); // 'imagem' é a chave para o arquivo
-        }
-        // Token do reCAPTCHA para o backend validar
-        formData.append('recaptchaToken', captchaToken);
+        const payload = {
+            nome,
+            produtor,
+            pais_origem,
+            tipo,
+            uva_casta
+        };
 
         setLoading(true);
         try {
-            // 3. Envia a requisição para a API
-            const response = await authFetch(`${API_BASE_URL}/api/chamados/${chamado.id}`, {
+            const response = await authFetch(`${API_BASE_URL}/vinho/${vinho.id}`, {
                 method: 'PUT',
-                body: formData,
-            });
-
-            if (!response.ok) {
-                // Se a resposta não for OK, lança um erro
-                const erro = await response.json().catch(() => ({}));
-                throw new Error(erro.erro || `Erro HTTP: ${response.status}`);
-            }
-
-            // Faz o parse do json recebido (se precisar do retorno)
-            await response.json().catch(() => ({}));
-
-            navigate(`/chamados`);
-        } catch (error) {
-            // Se a requisição foi cancelada com AbortController, ignore.
-            // Caso contrário, exiba a mensagem no toast.
-            if (error?.name !== 'AbortError') setError(error.message);
-        } finally {
-            // encerrou a tentativa (sucesso ou erro)
-            setLoading(false);
-            // o ReCaptcha.jsx vai ver loading true→false, resetar o widget e limpar o token
-        }
-    }
-
-    // Função assíncrona para remover a imagem do chamado
-    const deleteImageChamado = async () => {
-        // Exige o reCAPTCHA também para remover a imagem
-        if (!captchaToken) {
-            setError('Por favor, confirme o reCAPTCHA antes de excluir a imagem do chamado.');
-            return;
-        }
-
-        setLoading(true);
-        try {
-            // 2. Envia a requisição para a API
-            const response = await authFetch(`${API_BASE_URL}/api/chamados/${chamado.id}`, {
-                method: 'PATCH',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    url_imagem: null,
-                    recaptchaToken: captchaToken,
-                }), // Envia o campo a ser alterado + token
+                body: JSON.stringify(payload)
             });
 
             if (!response.ok) {
-                // Se a resposta não for OK, lança um erro
-                const erro = await response.json().catch(() => ({}));
-                throw new Error(erro.erro || `Erro HTTP: ${response.status}`);
+                const errorData = await response.json().catch(() => null);
+                const errorMessage = errorData?.erro
+                    ? `Erro HTTP: STATUS ${response.status}. ${errorData?.erro} ${response.statusText}`
+                    : `Erro HTTP: STATUS ${response.status}. ${response.statusText}`;
+                throw new Error(errorMessage);
             }
 
-            // Requisição foi um sucesso, agora atualiza o estado local
-            setHasImagem(false);
+            navigate("/vinhos");
         } catch (error) {
-            // Se a requisição foi cancelada com AbortController, ignore.
-            // Caso contrário, exiba a mensagem no toast.
             if (error?.name !== 'AbortError') setError(error.message);
         } finally {
-            // terminou a tentativa de PATCH (sucesso ou erro)
             setLoading(false);
-            // o ReCaptcha.jsx detecta o fim do loading e reseta o captcha/token
         }
     };
+
+   
 
     return (
         <form onSubmit={submitForm} className='m-2'>
             {/* Toast de erro simples. Fica visível quando "error" tem conteúdo. */}
             {error && <Toast error={error} setError={setError} />}
 
-            <div className='my-2'>
-                <label htmlFor="id-input-texto" className='form-label'>Texto</label>
+           <div className='my-2'>
+                <label className='form-label' htmlFor="id-input-texto">Nome</label>
                 <input
-                    className="form-control"
+                    className='form-control'
                     type="text"
-                    id="id-input-texto"
-                    value={texto}
-                    onChange={(e) => setTexto(e.target.value)}
-                    placeholder='Digite o texto do chamado'
+                    id="id-input-nome"
+                    value={nome}
+                    onChange={(e) => setNome(e.target.value)}
+                    placeholder='Nome do vinho'
                 />
             </div>
-
             <div className='my-2'>
-                <label htmlFor="id-input-estado" className='form-label'>Estado</label>
+                <label className='form-label' htmlFor="id-input-texto">Produtor</label>
+                <input
+                    className='form-control'
+                    type="text"
+                    id="id-input-produtor"
+                    value={produtor}
+                    onChange={(e) => setProdutor(e.target.value)}
+                    placeholder='Nome do produtor'
+                />
+            </div>
+            <div className='my-2'>
+                <label className='form-label' htmlFor="id-input-texto">País de origem</label>
+                <input
+                    className='form-control'
+                    type="text"
+                    id="id-input-pais_origem"
+                    value={pais_origem}
+                    onChange={(e) => setPaisOrigem(e.target.value)}
+                    placeholder='Nome do país de origem'
+                />
+            </div>
+            {/* Select simples para o tipo do vinho */}
+            <div className='my-2'>
+                <label className='form-label' htmlFor="id-select-tipo">Tipo</label>
                 <select
-                    className="form-control"
-                    id="id-input-estado"
-                    value={estado}
-                    onChange={(e) => setEstado(e.target.value)}
+                    id='id-select-tipo'
+                    className='form-select'
+                    value={tipo}
+                    onChange={(e) => setTipo(e.target.value)}
                 >
-                    <option value="a">Aberto</option>
-                    <option value="f">Fechado</option>
+                    <option value="Branco">Branco</option>
+                    <option value="Tinto">Tinto</option>
+                    <option value="Rose">Rosé</option>
+                    <option value="Laranja">Laranja</option>
+                    <option value="Espumante_branco">Espumante Branco</option>
+                    <option value="Espumante_rose">Espumante Rosé</option>
+                    <option value="Frisante">Frisante</option>
+                    <option value="Fortificado">Fortificado</option>
                 </select>
             </div>
-
             <div className='my-2'>
-                <label htmlFor="id-input-imagem" className='form-label d-block'>Imagem</label>
-                {hasImagem && (
-                    <div className='d-inline-flex gap-2'>
-                        {chamado.url_imagem && (
-                            <>
-                                <img
-                                    src={chamado.url_imagem}
-                                    alt={`Imagem do chamado ${chamado.id}`}
-                                    width={100}
-                                    height={100}
-                                    onError={(e) => {
-                                        // Para evitar loops infinitos caso a imagem de fallback também falhe
-                                        e.target.onerror = null;
-                                        // Define uma imagem de fallback
-                                        e.target.src = "https://dummyimage.com/40x40/cccccc/000000.png&text=Error";
-                                    }}
-                                    className='border border-2 border-dark rounded-circle'
-                                />
-                                <button
-                                    type='button'
-                                    className='btn btn-danger'
-                                    onClick={deleteImageChamado}
-                                    disabled={!captchaToken || loading}
-                                >
-                                    Excluir
-                                </button>
-                            </>
-                        )}
-                    </div>
-                )}
-                <div>
-                    <input
-                        className="form-control"
-                        type="file"
-                        id="id-input-imagem"
-                        onChange={(e) => setImagem(e.target.files[0])} // Primeiro dos arquivos selecionados
-                    />
-                </div>
-            </div>
-
-            {/* reCAPTCHA do Google */}
-            <div className='my-2'>
-                <ReCaptcha
-                    setCaptchaToken={setCaptchaToken}
-                    loading={loading} // informa ao ReCaptcha quando a tentativa está em andamento
+                <label className='form-label' htmlFor="id-input-texto">Casta da uva</label>
+                <input
+                    className='form-control'
+                    type="text"
+                    id="id-input-uva_casta"
+                    value={uva_casta}
+                    onChange={(e) => setUvaCasta(e.target.value)}
+                    placeholder='Nome da casta da uva'
                 />
             </div>
 
@@ -193,7 +132,7 @@ const ChamadoEditForm = ({ chamado }) => {
                 <button
                     type='submit'
                     className='btn btn-primary'
-                    disabled={!captchaToken || loading}
+                    disabled={ loading}
                 >
                     {loading ? 'Enviando…' : 'Enviar'}
                 </button>
@@ -202,4 +141,4 @@ const ChamadoEditForm = ({ chamado }) => {
     )
 }
 
-export default ChamadoEditForm
+export default VinhoEditForm

@@ -28,7 +28,7 @@ const VinhosEdit = () => {
             setError(null);
 
             try {
-                const response = await authFetch(`${API_BASE_URL}vinho/${id}`);
+                const response = await authFetch(`${API_BASE_URL}/vinho/${id}`);
 
                 if (!response.ok) {
                     throw new Error('Não foi possível carregar os dados do vinho.');

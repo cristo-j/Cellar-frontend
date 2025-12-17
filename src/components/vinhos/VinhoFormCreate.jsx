@@ -108,7 +108,6 @@ const VinhoFormCreate = () => {
             {/* Toast de erro simples. Fica visível quando "error" tem conteúdo. */}
             {error && <Toast error={error} setError={setError} />}
 
-            {/* Campo de texto principal do vinho */}
             <div className='my-2'>
                 <label className='form-label' htmlFor="id-input-texto">Nome</label>
                 <input
@@ -151,6 +150,7 @@ const VinhoFormCreate = () => {
                     value={tipo}
                     onChange={(e) => setTipo(e.target.value)}
                 >
+                    <option value="">Selecione uma opção</option>
                     <option value="Branco">Branco</option>
                     <option value="Tinto">Tinto</option>
                     <option value="Rose">Rosé</option>

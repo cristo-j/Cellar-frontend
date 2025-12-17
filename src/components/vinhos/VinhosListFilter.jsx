@@ -13,14 +13,15 @@ const VinhosListFilter = ({ value, onChange }) => {
                 onChange={handleFilterChange}
                 value={value}
             >
-    <option value="Branco">Branco</option>
-    <option value="Tinto">Tinto</option>
-    <option value="Rose">Rosé</option>
-    <option value="Laranja">Laranja</option>
-    <option value="Espumante_branco">Espumante Branco</option>
-    <option value="Espumante_rose">Espumante Rosé</option>
-    <option value="Frisante">Frisante</option>
-    <option value="Fortificado">Fortificado</option>
+                <option value="">Todos</option>
+                <option value="Branco">Branco</option>
+                <option value="Tinto">Tinto</option>
+                <option value="Rose">Rosé</option>
+                <option value="Laranja">Laranja</option>
+                <option value="Espumante_branco">Espumante Branco</option>
+                <option value="Espumante_rose">Espumante Rosé</option>
+                <option value="Frisante">Frisante</option>
+                <option value="Fortificado">Fortificado</option>
 
             </select>
         </div>

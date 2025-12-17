@@ -29,9 +29,12 @@
 import { Link } from 'react-router-dom';
 import { useAuthFetch } from '../../auth/useAuthFetch';
 import { useAuth } from '../../auth/useAuth';
+import React, { useState } from 'react';
+
 
 // Pega a API_BASE_URL da variável de ambiente
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 
 import fallbackImg from './assets/imagemErro404.png';
 
@@ -47,6 +50,7 @@ const Vinho = ({ vinho, setError, onVinhoEstadoChange, onVinhoDelete }) => {
     const { user, authLoading } = useAuth(); // agora vem do contexto
     const currentUserId = user?.sub;
     const currentUserIsAdmin = user?.papel == 1;
+    const [showConfirm, setShowConfirm] = useState(false);
 
     // Handler do botão que alterna o estado do vinho (a <-> f).
     // a  = ativo/aberto
@@ -124,19 +128,19 @@ const Vinho = ({ vinho, setError, onVinhoEstadoChange, onVinhoDelete }) => {
                     <div className='d-flex justify-content-between'>
                         <span>Nome: {' '} <strong>{vinho.nome}</strong></span>
                         <span>Vinho <strong>#{vinho.id}</strong> </span>
-                        
+
                     </div>
                 </div>
                 <div className="card-body">
                     <Link to={`/vinhos/${vinho.id}`} className='text-body text-decoration-none'>
-                    <div className='d-flex justify-content-between'>
-                        <span>Produtor: {' '} {vinho.produtor}</span>
-                        <span>Pais de origem: {' '} {vinho.pais_origem}</span>
-                    </div>
-                    <div className='d-flex justify-content-between'>
-                        <span>Tipo: {' '} {vinho.tipo}</span>
-                        <span>Casta da uva: {' '} {vinho.uva_casta}</span>
-                    </div>
+                        <div className='d-flex justify-content-between'>
+                            <span>Produtor: {' '} {vinho.produtor}</span>
+                            <span>Pais de origem: {' '} {vinho.pais_origem}</span>
+                        </div>
+                        <div className='d-flex justify-content-between'>
+                            <span>Tipo: {' '} {vinho.tipo}</span>
+                            <span>Casta da uva: {' '} {vinho.uva_casta}</span>
+                        </div>
 
                     </Link>
                 </div>
@@ -165,7 +169,55 @@ const Vinho = ({ vinho, setError, onVinhoEstadoChange, onVinhoDelete }) => {
                     {/* Botões "Editar" e "Remover" estão presentes para futuras ações. */}
                     {(currentUserId == vinho.Usuarios_id || currentUserIsAdmin) && <Link to={`/vinhos/${vinho.id}/edit`} className="btn btn-info me-2 text-white">Editar</Link>}
                     {/* Remoção somente para ADMIN */}
-                    {(currentUserId == vinho.Usuarios_id || currentUserIsAdmin) && <button className="btn btn-danger me-2" onClick={handleVinhoDelete}>Remover</button>}
+                    {(currentUserId == vinho.Usuarios_id || currentUserIsAdmin) && <button
+                        className="btn btn-danger me-2"
+                        onClick={() => setShowConfirm(true)}
+                    >
+                        Remover
+                    </button>}
+                    {showConfirm && (
+                        <>
+                            <div className="modal fade show" style={{ display: 'block' }}>
+                                <div className="modal-dialog modal-dialog-centered">
+                                    <div className="modal-content">
+                                        <div className="modal-header">
+                                            <h5 className="modal-title">Confirmar exclusão</h5>
+                                            <button
+                                                type="button"
+                                                className="btn-close"
+                                                onClick={() => setShowConfirm(false)}
+                                            ></button>
+                                        </div>
+                                        <div className="modal-body">
+                                            <p>Tem certeza que deseja remover o vinho <strong>{vinho.nome}</strong>?</p>
+                                        </div>
+                                        <div className="modal-footer">
+                                            <button
+                                                type="button"
+                                                className="btn btn-secondary"
+                                                onClick={() => setShowConfirm(false)}
+                                            >
+                                                Cancelar
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className="btn btn-danger"
+                                                onClick={() => {
+                                                    setShowConfirm(false);
+                                                    handleVinhoDelete();
+                                                }}
+                                            >
+                                                Remover
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {/* Backdrop para escurecer o fundo */}
+                            <div className="modal-backdrop fade show"></div>
+                        </>
+                    )}
+
                 </div>
             </div>
         </div>

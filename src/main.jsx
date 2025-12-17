@@ -10,7 +10,7 @@ import Contato from './pages/Contato.jsx';
 import VinhosIndex from './pages/vinhos/VinhosIndex.jsx';
 import VinhosCreate from './pages/vinhos/VinhosCreate.jsx';
 import VinhosShow from './pages/vinhos/VinhosShow.jsx';
-//import VinhosEdit from './pages/vinhos/VinhosEdit.jsx';
+import VinhosEdit from './pages/vinhos/VinhosEdit.jsx';
 
 import UsuariosLogin from './pages/usuarios/UsuariosLogin.jsx';
 import UsuariosRegister from './pages/usuarios/UsuariosRegister.jsx';
@@ -26,7 +26,7 @@ const router = createHashRouter([
     { path: "/vinhos", element: <VinhosIndex /> },
     { path: "/vinhos/create", element: <VinhosCreate /> },
     { path: "/vinhos/:id", element: <VinhosShow /> },
-//    { path: "/vinhos/:id/edit", element: <VinhosEdit /> },
+    { path: "/vinhos/:id/edit", element: <VinhosEdit /> },
 
     { path: "/usuarios/login", element: <UsuariosLogin /> },
     { path: "/usuarios/register", element: <UsuariosRegister /> },
