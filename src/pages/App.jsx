@@ -18,7 +18,7 @@ const App = () => {
             <div className="d-flex flex-wrap gap-2 mx-2 mt-2">
                 {!user && <Link to="/usuarios/login" className="btn btn-primary d-inline">Entrar com Usuários</Link>}
                 {!user && <Link to="/usuarios/register" className="btn btn-primary d-inline">Registrar Usuários</Link>}
-                {user && <Link to="/vinho" className="btn btn-primary d-inline">Vinhos</Link>}
+                {user && <Link to="/vinhos" className="btn btn-primary d-inline">Vinhos</Link>}
                 {user && <Link to="/vinhos/create" className="btn btn-primary d-inline">Criar Vinho</Link>}
             </div>
         </div>

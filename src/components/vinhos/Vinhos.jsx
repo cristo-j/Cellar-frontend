@@ -1,8 +1,8 @@
-// src/components/Chamado.jsx
+// src/components/Vinho.jsx
 //
 // OBJETIVO
 // -----------------------------------------------------------------------------
-// Este componente é responsável por renderizar UM cartão de chamado e permitir
+// Este componente é responsável por renderizar UM cartão de vinho e permitir
 // que o usuário alterne o seu estado (ativo/inativo) diretamente no backend,
 // usando o helper de requisições autenticadas (useAuthFetch).
 //
@@ -14,14 +14,14 @@
 //     * Tenta renovar o access token automaticamente quando a API responder 401;
 //     * Refaz a requisição original uma única vez após o refresh.
 // - Props:
-//     * chamado: objeto com dados do chamado (id, texto, estado, url_imagem, etc.);
+//     * vinho: objeto com dados do vinho (id, texto, estado, url_imagem, etc.);
 //     * setError: função vinda do componente pai para exibir mensagens de erro (ex.: toast);
-//     * onChamadoEstadoChange: callback que o pai usa para atualizar a lista
-//       local quando o backend devolve o chamado atualizado.
+//     * onVinhoEstadoChange: callback que o pai usa para atualizar a lista
+//       local quando o backend devolve o vinho atualizado.
 // - Interação principal:
-//     * O botão "Ativo/Inativo" dispara um PATCH /api/chamados/:id trocando o
+//     * O botão "Ativo/Inativo" dispara um PATCH /api/vinhos/:id trocando o
 //       campo "estado" entre 'a' (ativo) e 'f' (fechado) e, em caso de sucesso,
-//       notifica o pai via onChamadoEstadoChange(...).
+//       notifica o pai via onVinhoEstadoChange(...).
 //
 // -----------------------------------------------------------------------------
 // Abaixo está a implementação do componente, com comentários linha a linha.
@@ -35,65 +35,65 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 import fallbackImg from './assets/imagemErro404.png';
 
-// Componente responsável por renderizar UM chamado da lista.
+// Componente responsável por renderizar UM vinho da lista.
 // Props:
-// - chamado: objeto com dados do chamado (id, texto, estado, url_imagem, etc.).
+// - vinho: objeto com dados do vinho (id, texto, estado, url_imagem, etc.).
 // - setError: função recebida do pai para exibir mensagens de erro (ex.: toast).
-// - onChamadoEstadoChange: callback disparado quando o PATCH no backend
-//   retorna o chamado atualizado; o pai usa isso para substituir o item na lista.
-const Chamado = ({ chamado, setError, onChamadoEstadoChange, onChamadoDelete }) => {
+// - onVinhoEstadoChange: callback disparado quando o PATCH no backend
+//   retorna o vinho atualizado; o pai usa isso para substituir o item na lista.
+const Vinho = ({ vinho, setError, onVinhoEstadoChange, onVinhoDelete }) => {
     // Obtém a função authFetch (um "fetch" com autenticação + refresh automático).
     const authFetch = useAuthFetch();
     const { user, authLoading } = useAuth(); // agora vem do contexto
     const currentUserId = user?.sub;
     const currentUserIsAdmin = user?.papel == 1;
 
-    // Handler do botão que alterna o estado do chamado (a <-> f).
+    // Handler do botão que alterna o estado do vinho (a <-> f).
     // a  = ativo/aberto
     // f  = fechado/inativo
-    const handleEstadoChange = async () => {
-        // Monta a URL do recurso que será atualizado (PATCH /api/chamados/:id).
-        const url = `${API_BASE_URL}/api/chamados/${chamado.id}`;
+    // const handleEstadoChange = async () => {
+    //     // Monta a URL do recurso que será atualizado (PATCH /api/vinhos/:id).
+    //     const url = `${API_BASE_URL}/api/vinhos/${vinho.id}`;
 
-        // Prepara o corpo da requisição. Aqui enviamos apenas o campo "estado"
-        // trocando 'a' por 'f' e vice-versa. O backend fará a atualização parcial (PATCH).
-        const payload = JSON.stringify({
-            estado: chamado.estado === 'a' ? 'f' : 'a',
-        });
+    //     // Prepara o corpo da requisição. Aqui enviamos apenas o campo "estado"
+    //     // trocando 'a' por 'f' e vice-versa. O backend fará a atualização parcial (PATCH).
+    //     const payload = JSON.stringify({
+    //         estado: vinho.estado === 'a' ? 'f' : 'a',
+    //     });
 
-        try {
-            // Faz a chamada usando o helper autenticado.
-            // Importante: adicionamos Content-Type: application/json porque o body é JSON.
-            // O authFetch cuida de:
-            //   - anexar Authorization: Bearer <token> (se existir);
-            //   - credentials: 'include' (envio de cookies);
-            //   - tentar /refresh em caso de 401 e refazer a requisição 1x.
-            const res = await authFetch(url, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: payload,
-            });
+    //     try {
+    //         // Faz a chamada usando o helper autenticado.
+    //         // Importante: adicionamos Content-Type: application/json porque o body é JSON.
+    //         // O authFetch cuida de:
+    //         //   - anexar Authorization: Bearer <token> (se existir);
+    //         //   - credentials: 'include' (envio de cookies);
+    //         //   - tentar /refresh em caso de 401 e refazer a requisição 1x.
+    //         const res = await authFetch(url, {
+    //             method: 'PATCH',
+    //             headers: { 'Content-Type': 'application/json' },
+    //             body: payload,
+    //         });
 
-            // Se a resposta NÃO for ok (status 2xx), tentamos ler um JSON de erro do backend
-            // e lançamos uma exceção com uma mensagem amigável.
-            if (!res.ok) {
-                const body = await res.json().catch(() => null); // se não for JSON, ignora
-                throw new Error(`Erro HTTP: ${res.status}. ${body?.erro ?? ``}`);
-            }
+    //         // Se a resposta NÃO for ok (status 2xx), tentamos ler um JSON de erro do backend
+    //         // e lançamos uma exceção com uma mensagem amigável.
+    //         if (!res.ok) {
+    //             const body = await res.json().catch(() => null); // se não for JSON, ignora
+    //             throw new Error(`Erro HTTP: ${res.status}. ${body?.erro ?? ``}`);
+    //         }
 
-            // Quando o backend responde 200/204 (ou similar) com o registro atualizado,
-            // lemos o JSON e avisamos o componente pai para atualizar a lista local.
-            const data = await res.json();
-            onChamadoEstadoChange(data);
-        } catch (error) {
-            // Qualquer erro (rede, backend, parse de JSON, etc.) cai aqui.
-            // Encaminhamos a mensagem para o pai mostrar (ex.: toast).
-            setError(error.message);
-        }
-    };
+    //         // Quando o backend responde 200/204 (ou similar) com o registro atualizado,
+    //         // lemos o JSON e avisamos o componente pai para atualizar a lista local.
+    //         const data = await res.json();
+    //         onVinhoEstadoChange(data);
+    //     } catch (error) {
+    //         // Qualquer erro (rede, backend, parse de JSON, etc.) cai aqui.
+    //         // Encaminhamos a mensagem para o pai mostrar (ex.: toast).
+    //         setError(error.message);
+    //     }
+    // };
 
-    const handleChamadoDelete = async () => {
-        const url = `${API_BASE_URL}/api/chamados/${chamado.id}`;
+    const handleVinhoDelete = async () => {
+        const url = `${API_BASE_URL}/vinho/${vinho.id}`;
 
         try {
             const res = await authFetch(url, {
@@ -105,7 +105,7 @@ const Chamado = ({ chamado, setError, onChamadoEstadoChange, onChamadoDelete }) 
                 throw new Error(`Erro HTTP: ${res.status}. ${body?.erro ?? ``}`);
             }
 
-            onChamadoDelete(chamado.id);
+            onVinhoDelete(vinho.id);
         } catch (error) {
             setError(error.message);
         }
@@ -116,64 +116,61 @@ const Chamado = ({ chamado, setError, onChamadoEstadoChange, onChamadoDelete }) 
         return null;
     }
 
-    // Abaixo está apenas a renderização do cartão do chamado (UI).
+    // Abaixo está apenas a renderização do cartão do vinho (UI).
     return (
         <div>
             <div className="card m-2">
                 <div className="card-header">
                     <div className='d-flex justify-content-between'>
-                        <span>Chamado <strong>#{chamado.id}</strong> </span>
-                        <span>Criado por: {' '} <strong>{chamado.nome}</strong></span>
+                        <span>Nome: {' '} <strong>{vinho.nome}</strong></span>
+                        <span>Vinho <strong>#{vinho.id}</strong> </span>
+                        
                     </div>
                 </div>
                 <div className="card-body">
-                    <Link to={`/chamados/${chamado.id}`} className='text-body text-decoration-none'>
-                        {/* Se houver imagem, tenta exibir; se der erro no carregamento, usa um fallback local */}
-                        {chamado.url_imagem && (
-                            <img
-                                className="me-2 rounded"
-                                width={40}
-                                src={chamado.url_imagem}
-                                onError={(e) => {
-                                    e.currentTarget.onerror = null;      // evita loop infinito
-                                    e.currentTarget.src = fallbackImg;
-                                }}
-                            />
-                        )}
-                        <span>{chamado.texto}</span>
+                    <Link to={`/vinhos/${vinho.id}`} className='text-body text-decoration-none'>
+                    <div className='d-flex justify-content-between'>
+                        <span>Produtor: {' '} {vinho.produtor}</span>
+                        <span>Pais de origem: {' '} {vinho.pais_origem}</span>
+                    </div>
+                    <div className='d-flex justify-content-between'>
+                        <span>Tipo: {' '} {vinho.tipo}</span>
+                        <span>Casta da uva: {' '} {vinho.uva_casta}</span>
+                    </div>
+
                     </Link>
                 </div>
                 <div className="card-footer text-body-secondary">
-                    {/* Botão que alterna o estado do chamado.
+                    {/* Botão que alterna o estado do vinho.
               Ao clicar, dispara handleEstadoChange (PATCH). */}
-                    {chamado.estado === 'a' && (
+                    {/* {vinho.estado === 'a' && (
                         <button
                             className="btn btn-success me-2"
                             onClick={handleEstadoChange}
-                            disabled={!currentUserIsAdmin && currentUserId != chamado.Usuarios_id}
+                            disabled={!currentUserIsAdmin && currentUserId != vinho.Usuarios_id}
                         >
                             Aberto
                         </button>
                     )}
-                    {chamado.estado === 'f' && (
+                    {vinho.estado === 'f' && (
                         <button
                             className="btn btn-secondary me-2"
                             onClick={handleEstadoChange}
-                            disabled={!currentUserIsAdmin && currentUserId != chamado.Usuarios_id}
+                            disabled={!currentUserIsAdmin && currentUserId != vinho.Usuarios_id}
                         >
                             Fechado
                         </button>
-                    )}
+                    )} */}
 
                     {/* Botões "Editar" e "Remover" estão presentes para futuras ações. */}
-                    {(currentUserId == chamado.Usuarios_id || currentUserIsAdmin) && <Link to={`/chamados/${chamado.id}/edit`} className="btn btn-info me-2 text-white">Editar</Link>}
+                    {(currentUserId == vinho.Usuarios_id || currentUserIsAdmin) && <Link to={`/vinhos/${vinho.id}/edit`} className="btn btn-info me-2 text-white">Editar</Link>}
                     {/* Remoção somente para ADMIN */}
-                    {(currentUserIsAdmin) && <button className="btn btn-danger me-2" onClick={handleChamadoDelete}>Remover</button>}
+                    {(currentUserId == vinho.Usuarios_id || currentUserIsAdmin) && <button className="btn btn-danger me-2" onClick={handleVinhoDelete}>Remover</button>}
                 </div>
             </div>
         </div>
     );
 };
 
-export default Chamado;
+export default Vinho;
 

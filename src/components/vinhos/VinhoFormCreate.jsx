@@ -42,7 +42,7 @@ const VinhoFormCreate = () => {
     const [produtor, setProdutor] = useState("");
     const [pais_origem, setPaisOrigem] = useState("");
     const [tipo, setTipo] = useState("");
-    const [uva_casta, setUvaCasta] = useState("");  
+    const [uva_casta, setUvaCasta] = useState("");
 
 
     // Tipo para armazenar mensagens de erro e exibir no toast.
@@ -63,42 +63,42 @@ const VinhoFormCreate = () => {
     // Handler do submit do formulário.
     // Aqui montamos o FormData e enviamos para a API.
     const handleSubmit = async (e) => {
-  e.preventDefault();
-  setError(null);
+        e.preventDefault();
+        setError(null);
 
-  const payload = {
-    nome,
-    produtor,
-    pais_origem,
-    tipo,
-    uva_casta
-  };
+        const payload = {
+            nome,
+            produtor,
+            pais_origem,
+            tipo,
+            uva_casta
+        };
 
-  setLoading(true);
-  try {
-    const response = await authFetch(`${API_BASE_URL}/vinho`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    });
+        setLoading(true);
+        try {
+            const response = await authFetch(`${API_BASE_URL}/vinho`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => null);
-      const errorMessage = errorData?.erro
-        ? `Erro HTTP: STATUS ${response.status}. ${errorData?.erro} ${response.statusText}`
-        : `Erro HTTP: STATUS ${response.status}. ${response.statusText}`;
-      throw new Error(errorMessage);
-    }
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => null);
+                const errorMessage = errorData?.erro
+                    ? `Erro HTTP: STATUS ${response.status}. ${errorData?.erro} ${response.statusText}`
+                    : `Erro HTTP: STATUS ${response.status}. ${response.statusText}`;
+                throw new Error(errorMessage);
+            }
 
-    navigate("/vinhos");
-  } catch (error) {
-    if (error?.name !== 'AbortError') setError(error.message);
-  } finally {
-    setLoading(false);
-  }
-};
+            navigate("/vinhos");
+        } catch (error) {
+            if (error?.name !== 'AbortError') setError(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
 
     // Renderização do formulário.
@@ -151,13 +151,14 @@ const VinhoFormCreate = () => {
                     value={tipo}
                     onChange={(e) => setTipo(e.target.value)}
                 >
-    <option value="branco">Branco</option>
-    <option value="tinto">Tinto</option>
-    <option value="rose">Rosé</option>
-    <option value="espumante_branco">Espumante Branco</option>
-    <option value="espumante_rose">Espumante Rosé</option>
-    <option value="frisante">Frisante</option>
-    <option value="fortificado">Fortificado</option>
+                    <option value="Branco">Branco</option>
+                    <option value="Tinto">Tinto</option>
+                    <option value="Rose">Rosé</option>
+                    <option value="Laranja">Laranja</option>
+                    <option value="Espumante_branco">Espumante Branco</option>
+                    <option value="Espumante_rose">Espumante Rosé</option>
+                    <option value="Frisante">Frisante</option>
+                    <option value="Fortificado">Fortificado</option>
                 </select>
             </div>
             <div className='my-2'>
