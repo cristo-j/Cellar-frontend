@@ -28,7 +28,7 @@ const VinhosList = () => {
         "vinhosTipoSelecionadoCache"
     );
     if (tipoSelecionadoCache === null) {
-        tipoSelecionadoCache = "a"; // padrão = "Abertos"
+        tipoSelecionadoCache = ""; // padrão = "Todos"
     }
 
     // Fonte de verdade: lista completa

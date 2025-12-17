@@ -3,7 +3,7 @@ const VinhoShow = ({ vinho }) => {
     const produtor = vinho.produtor;
     const pais_origem = vinho.pais_origem;
     const tipo = vinho.tipo;
-    const uva_casta = vinho.pais_origem;
+    const uva_casta = vinho.uva_casta;
     return (
         <div className='m-2'>
             <div className='my-2'>
@@ -16,7 +16,7 @@ const VinhoShow = ({ vinho }) => {
             </div>
             <div className='my-2'>
                 <label htmlFor="id-input-pais_origem" className='form-label'>Pais de origem</label>
-                <input className="form-control" type="text" id="id-input-produtor" value={pais_origem} readOnly />
+                <input className="form-control" type="text" id="id-input-pais_origem" value={pais_origem} readOnly />
             </div>
             <div className='my-2'>
                 <label htmlFor="id-input-tipo" className='form-label'>Tipo</label>

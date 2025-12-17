@@ -2,7 +2,7 @@
 
 const VinhosListFilter = ({ value, onChange }) => {
     const handleFilterChange = (e) => {
-        onChange(e.target.value); // "a", "f" ou ""
+        onChange(e.target.value); 
     };
 
     return (
@@ -16,7 +16,7 @@ const VinhosListFilter = ({ value, onChange }) => {
                 <option value="">Todos</option>
                 <option value="Branco">Branco</option>
                 <option value="Tinto">Tinto</option>
-                <option value="Rose">Rosé</option>
+                <option value="Rosé">Rosé</option>
                 <option value="Laranja">Laranja</option>
                 <option value="Espumante_branco">Espumante Branco</option>
                 <option value="Espumante_rose">Espumante Rosé</option>

@@ -28,30 +28,11 @@ import react from "@vitejs/plugin-react-swc";
 // Isso ajuda a reduzir o risco de ataques como XSS (injeção de scripts).
 const csp = [
   "default-src 'none'",
-
-  // Libera ReCAPTCHA scripts (google + gstatic)
-  "script-src 'self' https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/",
-  // Alguns browsers distinguem script-src-elem
-  "script-src-elem 'self' https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/",
-
   "style-src 'self'",
-  // ReCAPTCHA carrega assets como imagens em gstatic/google
-  "img-src 'self' data: https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/ http://localhost:3000 https://node-chamados-backend-2025.onrender.com",
-  "font-src 'self'",
-
-  // ReCAPTCHA faz requests XHR/fetch pra google/gstatic
-  "connect-src 'self' https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/ http://localhost:3000 https://node-chamados-backend-2025.onrender.com",
-  
   "base-uri 'none'",
   "frame-ancestors 'none'",
   "form-action 'self'",
   "object-src 'none'",
-
-  // Iframes do ReCAPTCHA
-  "frame-src 'self' https://www.google.com/recaptcha/ https://recaptcha.google.com/recaptcha/",
-  // Se quiser ser extra seguro, pode manter child-src junto:
-  "child-src https://www.google.com/recaptcha/ https://recaptcha.google.com/recaptcha/",
-
   "upgrade-insecure-requests",
 ].join("; ");
 

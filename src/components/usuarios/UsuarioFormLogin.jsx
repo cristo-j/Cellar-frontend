@@ -2,12 +2,7 @@
 //
 // OBJETIVO
 // -----------------------------------------------------------------------------
-// Componente de LOGIN.
-// Envia email/senha (e agora o token do reCAPTCHA) para POST /api/usuarios/login.
-// Se der certo, o backend retorna:
-//   - access_token (curta duração) → salvamos na sessionStorage
-//   - refresh token (longa duração) → vem num cookie HttpOnly (o JS não acessa)
-// Depois do login, atualiza o contexto de autenticação e redireciona para "/".
+
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -33,15 +28,11 @@ const UsuariosFormLogin = () => {
     const handleSubmit = async (e) => {
         e.preventDefault(); // evita recarregar a página
         setError("");       // limpa erro anterior (se houver)
-
-        // Se o usuário não marcou o reCAPTCHA, bloqueia o submit
-
-
         setLoading(true);   // desabilita botão/mostra "Entrando…"
 
         try {
             // Chamada à API de login:
-            // Agora enviamos também o token do reCAPTCHA para o backend validar.
+
             const res = await fetch(`${API_BASE_URL}/usuario/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -78,8 +69,6 @@ const UsuariosFormLogin = () => {
 
             // (Opcional) limpa o campo de senha
             setSenha("");
-            // (Opcional) limpa o reCAPTCHA
-            setCaptchaToken(null);
 
             // Redireciona para a página inicial (ou, se quiser, para "/chamados")
             navigate("/");
@@ -128,11 +117,6 @@ const UsuariosFormLogin = () => {
                     />
                 </div>
 
-                {/* reCAPTCHA do Google */}
-
-
-                {/* Enquanto loading=true, desabilita o botão e mostra "Entrando…" 
-            Também desabilita se o reCAPTCHA não estiver marcado */}
                 <button
                     type="submit"
                     className="btn btn-primary"

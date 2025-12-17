@@ -43,9 +43,8 @@ const VinhoEditForm = ({ vinho }) => {
 
             if (!response.ok) {
                 const errorData = await response.json().catch(() => null);
-                const errorMessage = errorData?.erro
-                    ? `Erro HTTP: STATUS ${response.status}. ${errorData?.erro} ${response.statusText}`
-                    : `Erro HTTP: STATUS ${response.status}. ${response.statusText}`;
+                const errorMessage = errorData?.message
+                    ;
                 throw new Error(errorMessage);
             }
 
@@ -57,14 +56,14 @@ const VinhoEditForm = ({ vinho }) => {
         }
     };
 
-   
+
 
     return (
         <form onSubmit={submitForm} className='m-2'>
             {/* Toast de erro simples. Fica visível quando "error" tem conteúdo. */}
             {error && <Toast error={error} setError={setError} />}
 
-           <div className='my-2'>
+            <div className='my-2'>
                 <label className='form-label' htmlFor="id-input-texto">Nome</label>
                 <input
                     className='form-control'
@@ -106,9 +105,10 @@ const VinhoEditForm = ({ vinho }) => {
                     value={tipo}
                     onChange={(e) => setTipo(e.target.value)}
                 >
+                    <option value="">Selecione uma opção</option>
                     <option value="Branco">Branco</option>
                     <option value="Tinto">Tinto</option>
-                    <option value="Rose">Rosé</option>
+                    <option value="Rosé">Rosé</option>
                     <option value="Laranja">Laranja</option>
                     <option value="Espumante_branco">Espumante Branco</option>
                     <option value="Espumante_rose">Espumante Rosé</option>
@@ -132,7 +132,7 @@ const VinhoEditForm = ({ vinho }) => {
                 <button
                     type='submit'
                     className='btn btn-primary'
-                    disabled={ loading}
+                    disabled={loading}
                 >
                     {loading ? 'Enviando…' : 'Enviar'}
                 </button>

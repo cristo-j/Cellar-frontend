@@ -48,10 +48,7 @@ const VinhoFormCreate = () => {
     // Tipo para armazenar mensagens de erro e exibir no toast.
     const [error, setError] = useState(null);
 
-    // Token do reCAPTCHA (preenchido pelo componente ReCaptcha).
-    const [captchaToken, setCaptchaToken] = useState(null);
 
-    // Indica se há uma requisição em andamento (para UX e pro ReCaptcha resetar no fim)
     const [loading, setLoading] = useState(false);
 
     // Hook para redirecionar a rota após sucesso.
@@ -86,9 +83,8 @@ const VinhoFormCreate = () => {
 
             if (!response.ok) {
                 const errorData = await response.json().catch(() => null);
-                const errorMessage = errorData?.erro
-                    ? `Erro HTTP: STATUS ${response.status}. ${errorData?.erro} ${response.statusText}`
-                    : `Erro HTTP: STATUS ${response.status}. ${response.statusText}`;
+                const errorMessage = errorData?.message
+;
                 throw new Error(errorMessage);
             }
 
@@ -153,7 +149,7 @@ const VinhoFormCreate = () => {
                     <option value="">Selecione uma opção</option>
                     <option value="Branco">Branco</option>
                     <option value="Tinto">Tinto</option>
-                    <option value="Rose">Rosé</option>
+                    <option value="Rosé">Rosé</option>
                     <option value="Laranja">Laranja</option>
                     <option value="Espumante_branco">Espumante Branco</option>
                     <option value="Espumante_rose">Espumante Rosé</option>
@@ -173,9 +169,6 @@ const VinhoFormCreate = () => {
                 />
             </div>
 
-
-            {/* Botão de envio do formulário.
-                Desabilita enquanto o reCAPTCHA não estiver marcado ou enquanto estiver carregando. */}
             <div className='my-2'>
                 <button
                     type='submit'
