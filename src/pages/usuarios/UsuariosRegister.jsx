@@ -1,12 +1,28 @@
-import { Link } from "react-router-dom"
-import UsuarioFormRegister from "../../components/usuarios/UsuarioFormRegister"
+// src/pages/usuarios/UsuariosRegister.jsx
+import { Link } from 'react-router-dom'
+import Navbar from "../../components/shared/Navbar"
+import UsuariosFormRegister from '../../components/usuarios/UsuarioFormRegister'
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '../../auth/useAuth';
 
 const UsuariosRegister = () => {
+    const { user, authLoading } = useAuth();
+
+    // Enquanto ainda está carregando o estado de auth, não decide redirecionar
+    if (authLoading) {
+        return <p>Carregando usuário...</p>; // ou um spinner bonitinho
+    }
+
+    // Se tiver usuário logado, redireciona declarativamente
+    if (user) {
+        return <Navigate to="/" replace />;
+    }
+
     return (
         <div>
-            <h1 className="my-0 mx-2">UsuariosRegister.jsx</h1>
-            <Link to="/" className="mx-2 btn btn-primary">Voltar</Link>
-            <UsuarioFormRegister />
+            <Navbar />
+            <Link to="/" className="btn btn-primary mx-2 mt-2">Voltar</Link>
+            <UsuariosFormRegister />
         </div>
     )
 }

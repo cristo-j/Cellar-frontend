@@ -1,55 +1,31 @@
-import React, { useEffect, useState } from 'react'
-import { useAuthFetch } from '../../auth/useAuthFetch';
 import { useAuth } from '../../auth/useAuth';
+import Navbar from '../../components/shared/Navbar'
+import VinhosList from '../../components/vinhos/VinhosList'
 import { Link, Navigate } from 'react-router-dom';
 
 const VinhosIndex = () => {
-    const [vinhos, setVinhos] = useState([]);
-    const authFetch = useAuthFetch();
-    const auth = useAuth();
-
-    useEffect(() => {
-        // cria uma função
-        const vinhosFetch = async () => {
-            try {
-                // Requisição para rota protegida 
-                const res = await authFetch("http://localhost:3000/vinho");
-                if (!res.ok)
-                    throw new Error("Algo errado aconteceu");
-                console.log("deu tudo certo");
-                const data = await res.json();
-                setVinhos(data);
-                console.log(data);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-        vinhosFetch(); // chama a função a primeira vez
-    }, []);
+    const { user, authLoading } = useAuth();
 
     // Enquanto ainda está carregando o estado de auth, não decide redirecionar
-    if (auth.authLoading) {
+    if (authLoading) {
         return <p>Carregando usuário...</p>; // ou um spinner bonitinho
     }
 
     // Se não tiver usuário logado, redireciona declarativamente
-    if (!auth.user) {
+    if (!user) {
         return <Navigate to="/usuario/login" replace />;
     }
 
     return (
         <div>
-            <Link to="/vinhos/create" className="btn btn-primary">Criar Vinho</Link>
-            {
-                vinhos.map(
-                    vinho =>
-                        <div key={vinho.id}>
-                            {vinho.id} - {vinho.nome} - {vinho.produtor}
-                        </div>
-                )
-            }
+            <Navbar />
+            <div className='d-flex flex-wrap gap-2 mx-2 mt-2'>
+                <Link to="/" className="btn btn-primary">Voltar</Link>
+                <Link to="/vinhos/create" className='btn btn-primary'>Criar Vinho</Link>
+            </div>
+            <VinhosList />
         </div>
-    )
+    );
 }
 
-export default VinhosIndex
+export default VinhosIndex;

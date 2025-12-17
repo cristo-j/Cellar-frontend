@@ -1,13 +1,10 @@
-import React from 'react'
-import Navbar from '../components/Navbar'
+import Navbar from "../components/shared/Navbar"
 
 const Contato = () => {
-  return (
-    <div>
-      <Navbar />
-      <h1>Contato</h1>
-    </div>
-  )
+    return (
+        <div>
+            <Navbar />
+        </div>
+    )
 }
-
 export default Contato

@@ -24,7 +24,7 @@ const AuthProvider = ({ children }) => {
         try {
             const decoded = jwtDecode(token);
 
-            if (decoded.expiresIn && decoded.expiresIn * 1000 < Date.now()) {
+            if (decoded.exp && decoded.exp * 1000 < Date.now()) {
                 setUser(null);
             } else {
                 setUser(decoded);
