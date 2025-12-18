@@ -1,9 +1,9 @@
 {
-    "name": "react-frontend-chamados-2025",
-    "homepage": "https://seu-usuario.github.io/react-frontend-chamados-2025/",
+    "name": "cellar-frontend",
+    "homepage": "https://github.com/cristo-j/Cellar-frontend",
     "private": false,
     "version": "1.0.0",
-    "description": "AtendeAí - Organize a fila de atendimento em aulas práticas",
+    "description": "Cellar - Controle de Adega de Vinhos",
     "type": "module",
     "scripts": {
         "dev": "vite",
@@ -13,7 +13,7 @@
         "predeploy": "npm run build",
         "deploy": "gh-pages -d dist"
     },
-    "author": "Leonardo Bravo Estácio",
+    "author": "Cristo Ivanov Junior",
     "license": "MIT",
     "dependencies": {
         "bootstrap": "^5.3.8",
